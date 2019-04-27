@@ -1,0 +1,13 @@
+[Unit]
+Description=kishinami
+After=syslog.target
+
+[Service]
+Type=simple
+WorkingDirectory=/opt/kishinami2
+ExecStart=/usr/bin/python3 main.py
+TimeoutStopSec=5
+StandardOutput=null
+
+[Install]
+WantedBy = multi-user.target

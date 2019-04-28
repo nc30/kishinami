@@ -7,3 +7,7 @@ GREEN = (0, 255, 0)
 YELLOW = (128, 128, 0)
 WHITE = (0, 0, 0)
 ORANGE = (255, 40, 0)
+
+NORMAL = 'normal'
+SILEN = 'silen'
+WARNING = 'warning'

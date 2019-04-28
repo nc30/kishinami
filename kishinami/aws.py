@@ -4,11 +4,13 @@ logger = getLogger(__name__)
 from naganami_mqtt.awsiot import AwsIotContoller, getAwsCredentialFromJson
 from .color import Color
 import json
+from . import NORMAL, WARNING, SILEN
 
 class Kishinami(AwsIotContoller):
     status = {
         'color': Color([255, 40, 0]).list,
-        'mask': 255
+        'mask': 255,
+        'state': NORMAL
     }
 
     def setBlinks(self, blinks):
@@ -43,18 +45,38 @@ class Kishinami(AwsIotContoller):
 
         self.blinks.shock(color)
 
+    def cmd_state(self, payload):
+        if payload in [NORMAL, SILEN, WARNING]:
+            self._shadow_update(desired={'state': payload})
+            return {'success': True}
+        return {'success': False}
+
     def delta_function(self, payload):
         r = {}
         for k, v in payload['state'].items():
             if k == 'color':
                 try:
                     self.status[k] = Color(v).list
+                    r[k] = self.status[k]
                 except TypeError:
                     pass
+
+            if k == 'state':
+                if v == NORMAL:
+                    v = NORMAL
+                elif v == SILEN:
+                    v = SILEN
+                else:
+                    v = WARNING
+
+                self.status[k] = v
+                r[k] = v
+                continue
             elif k in self.status.keys():
                 self.status[k] = v
                 continue
             r[k] = None
 
         self.blinks.setColor(self.status['color'], self.status['mask'])
+        self.blinks.setState(self.status['state'])
         self._shadow_update(reported=self.status, desired=r)

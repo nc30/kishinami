@@ -5,8 +5,9 @@ import blinkt
 from threading import Thread
 import time
 from .action import shock
-from .pettern import Null, Flear, Flear2
-from . import ORANGE
+from .pettern import Null, Flear
+from . import ORANGE, BLUE, YELLOW, RED, GREEN
+from . import NORMAL, WARNING, SILEN
 
 class Base(Thread):
     buf = 0
@@ -16,19 +17,39 @@ class Base(Thread):
         blinkt.set_clear_on_exit()
         blinkt.set_brightness(0.3)
 
-        for num in range(blinkt.NUM_PIXELS):
-            self.leds[num] = Flear2(start=num / blinkt.NUM_PIXELS)
-
+        self.color = ORANGE
         self.loop = True
         self.normal = True
+        self.clock = 0
+        self.setState(NORMAL)
+        # self.setState(SILEN)
+        # self.setState(WARNING)
+
+    def setState(self, state):
+        if state == NORMAL:
+            for num in range(blinkt.NUM_PIXELS):
+                self.leds[num] = Flear(start=num / blinkt.NUM_PIXELS, speed=8, lowest=0.2)
+                self.color = BLUE
+        elif state == SILEN:
+            for num in range(blinkt.NUM_PIXELS):
+                self.leds[num] = Flear(start=num / blinkt.NUM_PIXELS, speed=40, buf=4, sub=2)
+                self.color = RED
+        else:
+            for num in range(blinkt.NUM_PIXELS):
+                self.leds[num] = Flear(start=num / blinkt.NUM_PIXELS, speed=8)
+                self.color = ORANGE
+
+        self._setColor(self.color)
 
     def setColor(self, color, mask=255):
+        self._setColor(color, mask)
+
+    def _setColor(self, color, mask=255):
         for i in range(blinkt.NUM_PIXELS):
             if mask & (i + 1):
                 self.leds[i].setColor(color)
 
     def run(self):
-        self.color = ORANGE
         while self.loop:
             if self.normal:
                 self.write()
@@ -40,10 +61,14 @@ class Base(Thread):
         blinkt.show()
 
     def write(self):
+        self.clock += 1
+        if self.clock > 360:
+            self.clock = 0
+
         blinkt.clear()
 
         for num in range(blinkt.NUM_PIXELS):
-            blinkt.set_pixel(num, *self.leds[num].clock())
+            blinkt.set_pixel(num, *self.leds[num].clock(self.clock))
         blinkt.show()
 
     def shock(self, color):
@@ -78,4 +103,3 @@ if __name__ == '__main__':
     finally:
         print('bye')
         d.destroy()
-

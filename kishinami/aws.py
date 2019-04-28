@@ -1,16 +1,22 @@
 from logging import getLogger
 logger = getLogger(__name__)
 
+logger.debug('hello!')
+
 from naganami_mqtt.awsiot import AwsIotContoller
 from kishinami import NORMAL, WARNING, SILEN
 from .color import Color
+from threading import Thread
 import json
+import time
 
 class Kishinami(AwsIotContoller):
+    logger = logger
     status = {
         'color': Color([255, 40, 0]).list,
-        'mask': 255,
-        'state': NORMAL
+        'state': NORMAL,
+        'check_span': 180,
+        'noticeset': []
     }
 
     def setBlinks(self, blinks):
@@ -21,7 +27,24 @@ class Kishinami(AwsIotContoller):
         self.client.on_disconnect = self.on_disconnect
 
     def on_disconnect(client, userdata, rc):
-        pass
+        logger.info('Connection lost.')
+
+    def loop(self, block=True):
+        self.logger.debug('loop start.')
+        self.looping = True
+
+        self.client.loop_start()
+        i = 0
+        while self.looping:
+            i += 1
+            if i > int(self.status['check_span']) * 10:
+                self._shadow_update(self.status)
+                i = 0
+            time.sleep(0.1)
+
+    def destroy(self):
+        self.client.disconnect()
+        self.looping = False
 
     def cmd_color(self, payload):
         try:
@@ -41,7 +64,7 @@ class Kishinami(AwsIotContoller):
             payload = json.loads(payload)
             color = Color(payload['color']).list
         except:
-            color = [255, 0, 0]
+            color = [255, 40, 0]
 
         self.blinks.shock(color)
 
@@ -61,7 +84,7 @@ class Kishinami(AwsIotContoller):
                 except TypeError:
                     pass
 
-            if k == 'state':
+            elif k == 'state':
                 if v == NORMAL:
                     v = NORMAL
                 elif v == SILEN:
@@ -72,11 +95,19 @@ class Kishinami(AwsIotContoller):
                 self.status[k] = v
                 r[k] = v
                 continue
+
             elif k in self.status.keys():
                 self.status[k] = v
                 continue
             r[k] = None
 
-        self.blinks.setColor(self.status['color'], self.status['mask'])
+
         self.blinks.setState(self.status['state'])
+        if self.status['state'] == NORMAL:
+            for i in range(0, 8):
+                if i >= len(self.status['noticeset']):
+                    break
+                if type(self.status['noticeset'][i]) == list:
+                    self.blinks.setColor(self.status['noticeset'][i], 1 << i)
+
         self._shadow_update(reported=self.status, desired=r)

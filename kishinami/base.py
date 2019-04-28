@@ -22,19 +22,20 @@ class Base(Thread):
         self.normal = True
         self.clock = 0
         self.setState(NORMAL)
-        # self.setState(SILEN)
-        # self.setState(WARNING)
 
     def setState(self, state):
         if state == NORMAL:
+            blinkt.set_brightness(0.1)
             for num in range(blinkt.NUM_PIXELS):
                 self.leds[num] = Flear(start=num / blinkt.NUM_PIXELS, speed=8, lowest=0.2)
                 self.color = BLUE
         elif state == SILEN:
+            blinkt.set_brightness(0.3)
             for num in range(blinkt.NUM_PIXELS):
-                self.leds[num] = Flear(start=num / blinkt.NUM_PIXELS, speed=40, buf=4, sub=2)
+                self.leds[num] = Flear(start=num / blinkt.NUM_PIXELS, speed=60, buf=5, sub=0)
                 self.color = RED
         else:
+            blinkt.set_brightness(0.2)
             for num in range(blinkt.NUM_PIXELS):
                 self.leds[num] = Flear(start=num / blinkt.NUM_PIXELS, speed=8)
                 self.color = ORANGE
@@ -45,8 +46,9 @@ class Base(Thread):
         self._setColor(color, mask)
 
     def _setColor(self, color, mask=255):
+        logger.debug('setcolor %s, %s', color, mask)
         for i in range(blinkt.NUM_PIXELS):
-            if mask & (i + 1):
+            if mask & 1 << i:
                 self.leds[i].setColor(color)
 
     def run(self):

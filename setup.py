@@ -1,14 +1,16 @@
 from setuptools import setup
+from setuptools import find_packages
+import kishinami
 
 requires = ['naganami-mqtt', 'blinkt']
 
 setup(
     name = "kishinami",
-    version = '0.0.0',
+    version = kishinami.__version__,
     install_requires = requires,
     author = 'Himura Asahi',
     author_email = 'himura@nitolab.com',
-    packages = ["kishinami"],
+    packages = find_packages(),
     description = "kishinami",
     url = "https://github.com/nc30/kishinami"
 )

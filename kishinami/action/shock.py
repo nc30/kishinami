@@ -3,7 +3,7 @@ import math
 import colorsys
 import time
 
-def run(color=[255, 0, 0]):
+def run(color=[255, 40, 0]):
     blinkt.clear()
     time.sleep(0.1)
     colors = colorsys.rgb_to_hsv(*[c/255 for c in color])[:2]

@@ -4,8 +4,8 @@ After=syslog.target
 
 [Service]
 Type=simple
-WorkingDirectory=/home/hirose/opt/kishinami
-ExecStart=/opt/kishinami/python/bin/python3 run.py
+WorkingDirectory=/opt/kishinami
+ExecStart=/opt/kishinami/python/bin/python3 /opt/kishinami/run.py
 TimeoutStopSec=5
 StandardOutput=null
 User=pi

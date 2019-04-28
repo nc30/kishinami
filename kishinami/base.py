@@ -1,13 +1,13 @@
 from logging import getLogger
 logger = getLogger(__name__)
 
-import blinkt
 from threading import Thread
+import blinkt
 import time
-from .action import shock
-from .pettern import Null, Flear
-from . import ORANGE, BLUE, YELLOW, RED, GREEN
-from . import NORMAL, WARNING, SILEN
+from kishinami import ORANGE, BLUE, YELLOW, RED, GREEN
+from kishinami import NORMAL, WARNING, SILEN
+from .pattern import Null, Flear
+from . import action
 
 class Base(Thread):
     buf = 0
@@ -73,7 +73,7 @@ class Base(Thread):
 
     def shock(self, color):
         self.normal = False
-        shock.run(color)
+        action.shock.run(color)
         self.normal = True
 
     def destroy(self):

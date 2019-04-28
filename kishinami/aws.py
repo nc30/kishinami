@@ -1,10 +1,10 @@
 from logging import getLogger
 logger = getLogger(__name__)
 
-from naganami_mqtt.awsiot import AwsIotContoller, getAwsCredentialFromJson
+from naganami_mqtt.awsiot import AwsIotContoller
+from kishinami import NORMAL, WARNING, SILEN
 from .color import Color
 import json
-from . import NORMAL, WARNING, SILEN
 
 class Kishinami(AwsIotContoller):
     status = {

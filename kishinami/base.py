@@ -28,7 +28,7 @@ class Base(Thread):
             blinkt.set_brightness(0.1)
             for num in range(blinkt.NUM_PIXELS):
                 self.leds[num] = Flear(start=num / blinkt.NUM_PIXELS, speed=8, lowest=0.2)
-                self.color = BLUE
+                self.color = [0, 0, 128]
         elif state == SILEN:
             blinkt.set_brightness(0.3)
             for num in range(blinkt.NUM_PIXELS):

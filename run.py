@@ -1,15 +1,19 @@
 import logging
-logger = logging.getLogger('kishinami')
-logger = logging.getLogger('kishinami')
-logger.setLevel(logging.DEBUG)
-logger.addHandler(logging.StreamHandler())
+from logging.handlers import TimedRotatingFileHandler
+import sys
+logger = logging.getLogger()
+logger.setLevel(logging.INFO)
+# handler = TimedRotatingFileHandler('log.log', when='d', encoding='utf-8', backupCount=3)
+handler = logging.StreamHandler(stream=sys.stdout)
+# handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
+logger.addHandler(handler)
 
 from naganami_mqtt.awsiot import getAwsCredentialFromJson
 from kishinami.base import Base
 from kishinami.aws import Kishinami
 credential = getAwsCredentialFromJson('/aws/iot.json')
 
-c = Kishinami(credential, logger=logger)
+c = Kishinami(credential)
 blinks = Base()
 blinks.start()
 

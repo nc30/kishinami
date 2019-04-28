@@ -4,12 +4,12 @@ After=syslog.target
 
 [Service]
 Type=simple
-WorkingDirectory=/home/hirose/opt/takanami
-ExecStart=/usr/bin/python3 run.py
+WorkingDirectory=/home/hirose/opt/kishinami
+ExecStart=/opt/kishinami/python/bin/python3 run.py
 TimeoutStopSec=5
 StandardOutput=null
-User=hirose
-Group=hirose
+User=pi
+Group=pi
 
 [Install]
 WantedBy = multi-user.target

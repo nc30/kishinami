@@ -1,13 +1,15 @@
 [Unit]
-Description=kishinami
+Description=takanami
 After=syslog.target
 
 [Service]
 Type=simple
-WorkingDirectory=/opt/kishinami2
-ExecStart=/usr/bin/python3 main.py
+WorkingDirectory=/home/hirose/opt/takanami
+ExecStart=/usr/bin/python3 run.py
 TimeoutStopSec=5
 StandardOutput=null
+User=hirose
+Group=hirose
 
 [Install]
 WantedBy = multi-user.target

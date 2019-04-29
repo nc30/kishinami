@@ -6,18 +6,23 @@ import math
 from kishinami import WHITE, YELLOW, ORANGE, RED, BLUE
 
 class Flear:
-    def __init__(self, start=0, color=ORANGE, speed=8, buf=1, sub=0, lowest=0):
+    def __init__(self, start=0, color=ORANGE, speed=8, buf=1, sub=0, lowest=0, blink=0):
         self.setColor(color)
         self.speed = speed
         self.start = start * 360
         self.buf = buf
         self.sub = sub
         self.lowest = lowest
+        self.blink = blink
 
     def setColor(self, rgb):
         self.color = colorsys.rgb_to_hsv(*[c/255 for c in rgb])[:2]
 
     def clock(self, clock):
+        if self.blink and clock % (360 / self.blink) > 360 / (self.blink * 2):
+            v = 0
+            return [0, 0, 0]
+
         clock = clock * self.speed + self.start
 
         m = abs(math.cos(math.radians(clock)))

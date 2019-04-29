@@ -40,16 +40,14 @@ class Base(Thread):
                 self.leds[num] = Flear(start=num / blinkt.NUM_PIXELS, speed=8)
                 self.color = ORANGE
 
-        self._setColor(self.color)
+        self.setColor(self.color)
 
-    def setColor(self, color, mask=255):
-        self._setColor(color, mask)
-
-    def _setColor(self, color, mask=255):
+    def setColor(self, color, mask=255, blink=0):
         logger.debug('setcolor %s, %s', color, mask)
         for i in range(blinkt.NUM_PIXELS):
             if mask & 1 << i:
                 self.leds[i].setColor(color)
+                self.leds[i].blink = blink
 
     def run(self):
         while self.loop:

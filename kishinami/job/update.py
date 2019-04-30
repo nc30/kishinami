@@ -46,8 +46,8 @@ class UpdateJob(JobScenario):
             proc.communicate()
             proc.wait()
 
-            logger.info(subprocess.stdout)
-            logger.info(subprocess.stderr)
+            logger.info(proc.stdout)
+            logger.info(proc.stderr)
 
             logger.debug(proc.returncode)
             if proc.returncode != 0:

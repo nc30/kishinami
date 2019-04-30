@@ -1,10 +1,9 @@
 from logging import getLogger
 logger = getLogger(__name__)
 
-logger.debug('hello!')
-
 from naganami_mqtt.awsiot import AwsIotContoller
 from kishinami import NORMAL, WARNING, SIREN
+from .helper import getClientInfo
 from .job.update import UpdateJob
 from .color import Color
 from threading import Thread
@@ -113,5 +112,7 @@ class Kishinami(AwsIotContoller):
                     break
                 if type(self.status['noticeset'][i]) == list:
                     self.blinks.setColor(self.status['noticeset'][i], 1 << i, 12)
+
+        self.status['clientInfo'] = getClientInfo()
 
         self._shadow_update(reported=self.status, desired=r)

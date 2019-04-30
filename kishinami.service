@@ -1,5 +1,5 @@
 [Unit]
-Description=takanami
+Description=kishinami
 After=syslog.target
 
 [Service]

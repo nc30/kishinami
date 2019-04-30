@@ -1,17 +1,19 @@
 from logging import getLogger
 logger = getLogger(__name__)
 
+from kishinami.pattern import Null, Flear
+from kishinami import ORANGE, BLUE, YELLOW, RED, GREEN
+from kishinami import NORMAL, WARNING, SIREN, PROGRESSING
+from kishinami import action
 from threading import Thread
 import blinkt
 import time
-from kishinami import ORANGE, BLUE, YELLOW, RED, GREEN
-from kishinami import NORMAL, WARNING, SIREN
-from .pattern import Null, Flear
-from . import action
 
 class Base(Thread):
     buf = 0
     leds = [None for i in range(blinkt.NUM_PIXELS)]
+    currentColor = YELLOW
+
     def __init__(self, *args, **kwargs):
         super(Base, self).__init__(*args, **kwargs)
         blinkt.set_clear_on_exit()
@@ -21,19 +23,24 @@ class Base(Thread):
         self.loop = True
         self.normal = True
         self.clock = 0
-        self.setState(NORMAL)
+        self.setState(PROGRESSING)
 
     def setState(self, state):
         if state == NORMAL:
             blinkt.set_brightness(0.1)
             for num in range(blinkt.NUM_PIXELS):
                 self.leds[num] = Flear(start=num / blinkt.NUM_PIXELS, speed=8, lowest=0.2)
-                self.color = [0, 0, 128]
+                self.color = self.currentColor
         elif state == SIREN:
             blinkt.set_brightness(0.3)
             for num in range(blinkt.NUM_PIXELS):
                 self.leds[num] = Flear(start=num / blinkt.NUM_PIXELS, speed=60, buf=5, sub=0)
                 self.color = RED
+        elif state == PROGRESSING:
+            blinkt.set_brightness(0.1)
+            for num in range(blinkt.NUM_PIXELS):
+                self.leds[num] = Flear(start=num / blinkt.NUM_PIXELS, speed=30, sub=3, buf=2)
+                self.color = [20, 0, 85]
         else:
             blinkt.set_brightness(0.2)
             for num in range(blinkt.NUM_PIXELS):

@@ -4,6 +4,7 @@ set -E
 
 SCRIPT_DIR=$(cd $(dirname $0); pwd)
 APP=/opt/kishinami
+LOG=/var/log/kishinami
 
 which python3 > /dev/null || sudo apt-get install python3 -y
 which pip > /dev/null || sudo apt-get install python3-pip -y
@@ -14,6 +15,12 @@ if [ ! -d ${APP} ]; then
     cd ${APP}
     sudo virtualenv python --python=$(which python3)
 fi
+
+if [ ! -d ${LOG} ]; then
+    sudo mkdir ${log}
+    sudo chmod pi ${LOG}
+fi
+
 sudo cp ${SCRIPT_DIR}/run.py ${APP}/
 python3 ${SCRIPT_DIR}/setup.py sdist
 FILE=$(ls dist/|tail -n 1)

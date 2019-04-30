@@ -35,7 +35,7 @@ class UpdateJob(JobScenario):
             except Exception:
                 raise UpdateError
 
-            command = 'sudo /opt/kishinami/python/bin/pip3 install '+body['latest']['url']
+            command = 'sudo /opt/kishinami/python/bin/pip3 install --upgrade --force ' + body['latest']['url']
             proc = subprocess.Popen(
                 command,
                 shell  = True,
@@ -45,6 +45,9 @@ class UpdateJob(JobScenario):
             )
             proc.communicate()
             proc.wait()
+
+            logger.info(subprocess.stdout)
+            logger.info(subprocess.stderr)
 
             logger.debug(proc.returncode)
             if proc.returncode != 0:

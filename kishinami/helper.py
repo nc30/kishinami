@@ -1,18 +1,18 @@
 from logging import getLogger
 logger = getLogger(__name__)
 
+from uuid import getnode
+from kishinami import __version__
 import socket
-import kishinami
 
 def getClientInfo():
     return {
-        "kishinamiVersion": kishinami.__version__,
+        "kishinamiVersion": __version__,
         "macAddress": getMyMac(),
         "Host": getMyHost()
     }
 
 def getMyMac():
-    from uuid import getnode
     node = getnode()
     return ':'.join([hex(node >> i & 0xff)[2:] for i in reversed(range(0, 48, 8))])
 

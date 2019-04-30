@@ -14,7 +14,7 @@ class Kishinami(AwsIotContoller):
     jobScenarios = [UpdateJob]
     logger = logger
     status = {
-        'color': Color([255, 40, 0]).list,
+        'color': Color([0, 20, 128]).list,
         'state': NORMAL,
         'check_span': 180,
         'noticeset': []
@@ -24,15 +24,19 @@ class Kishinami(AwsIotContoller):
         self.blinks = blinks
 
     def on_connect(self, client, userdata, flags, respons_code):
-        self._shadow_update(reported=self.status)
-        self.request_job()
-        self.client.on_disconnect = self.on_disconnect
+        try:
+            self.blinks.setState(NORMAL)
+            self._shadow_update(reported=self.status)
+            self.request_job()
+            self.client.on_disconnect = self.on_disconnect
+        except Exception as e:
+            logger.exception(e)
 
     def on_disconnect(client, userdata, rc):
         logger.info('Connection lost.')
 
     def loop(self, block=True):
-        self.logger.debug('loop start.')
+        logger.debug('loop start.')
         self.looping = True
 
         self.client.loop_start()
@@ -64,12 +68,15 @@ class Kishinami(AwsIotContoller):
 
     def cmd_shock(self, payload):
         try:
-            payload = json.loads(payload)
-            color = Color(payload['color']).list
-        except:
-            color = [255, 40, 0]
+            try:
+                payload = json.loads(payload)
+                color = Color(payload['color']).list
+            except:
+                color = [255, 40, 0]
 
-        self.blinks.shock(color)
+            self.blinks.shock(color)
+        except Exception as e:
+            logger.exception(e)
 
     def cmd_state(self, payload):
         if payload in [NORMAL, SIREN, WARNING]:
@@ -82,8 +89,8 @@ class Kishinami(AwsIotContoller):
         for k, v in payload['state'].items():
             if k == 'color':
                 try:
-                    self.status[k] = Color(v).list
-                    r[k] = self.status[k]
+                    self.status['color'] = Color(v).list
+                    r['color'] = Color(v).list
                 except TypeError:
                     pass
 
@@ -105,7 +112,9 @@ class Kishinami(AwsIotContoller):
             r[k] = None
 
 
+        self.blinks.currentColor = self.status['color']
         self.blinks.setState(self.status['state'])
+
         if self.status['state'] == NORMAL:
             for i in range(0, 8):
                 if i >= len(self.status['noticeset']):
@@ -114,6 +123,5 @@ class Kishinami(AwsIotContoller):
                     self.blinks.setColor(self.status['noticeset'][i], 1 << i, 12)
 
         self.status['deviceInfo'] = getClientInfo()
-        self.blinks.currentColor = self.status['color']
 
         self._shadow_update(reported=self.status, desired=r)

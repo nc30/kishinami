@@ -17,8 +17,11 @@ def getMyMac():
     return ':'.join([hex(node >> i & 0xff)[2:] for i in reversed(range(0, 48, 8))])
 
 def getMyHost():
-    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
-    s.connect(("8.8.8.8", 80))
-    host = s.getsockname()[0]
-    s.close()
+    try:
+        s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+        s.connect(("8.8.8.8", 80))
+        host = s.getsockname()[0]
+        s.close()
+    except OSError:
+        host = 'unknown'
     return host

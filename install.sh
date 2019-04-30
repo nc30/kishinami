@@ -25,6 +25,7 @@ sudo cp ${SCRIPT_DIR}/run.py ${APP}/
 python3 ${SCRIPT_DIR}/setup.py sdist
 FILE=$(ls dist/|tail -n 1)
 sudo ${APP}/python/bin/pip3 install ${SCRIPT_DIR}/dist/${FILE}
+sudo rm -rf ${SCRIPT_DIR}/kishinami.egg-info
 
 [ ! -e /etc/systemd/system/kishinami.service ] && sudo cp ${SCRIPT_DIR}/kishinami.service /etc/systemd/system/
 

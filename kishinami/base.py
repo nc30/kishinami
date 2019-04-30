@@ -4,7 +4,7 @@ logger = getLogger(__name__)
 from kishinami.pattern import Null, Flear
 from kishinami import ORANGE, BLUE, YELLOW, RED, GREEN
 from kishinami import NORMAL, WARNING, SIREN, PROGRESSING
-from kishinami import action
+from kishinami.action import shock
 from threading import Thread
 import blinkt
 import time
@@ -12,14 +12,14 @@ import time
 class Base(Thread):
     buf = 0
     leds = [None for i in range(blinkt.NUM_PIXELS)]
-    currentColor = YELLOW
+    currentColor = BLUE
 
     def __init__(self, *args, **kwargs):
         super(Base, self).__init__(*args, **kwargs)
         blinkt.set_clear_on_exit()
         blinkt.set_brightness(0.1)
 
-        self.color = ORANGE
+        self.color = [0, 20, 128]
         self.loop = True
         self.normal = True
         self.clock = 0
@@ -42,7 +42,7 @@ class Base(Thread):
                 self.leds[num] = Flear(start=num / blinkt.NUM_PIXELS, speed=30, sub=3, buf=2)
                 self.color = [20, 0, 85]
         else:
-            blinkt.set_brightness(0.2)
+            blinkt.set_brightness(0.1)
             for num in range(blinkt.NUM_PIXELS):
                 self.leds[num] = Flear(start=num / blinkt.NUM_PIXELS, speed=8)
                 self.color = ORANGE
@@ -80,7 +80,7 @@ class Base(Thread):
 
     def shock(self, color):
         self.normal = False
-        action.shock.run(color)
+        shock.run(color)
         self.normal = True
 
     def destroy(self):

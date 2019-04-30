@@ -1,0 +1,1 @@
+from kishinami.action import shock

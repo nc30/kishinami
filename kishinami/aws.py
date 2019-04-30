@@ -4,7 +4,7 @@ logger = getLogger(__name__)
 logger.debug('hello!')
 
 from naganami_mqtt.awsiot import AwsIotContoller
-from kishinami import NORMAL, WARNING, SILEN
+from kishinami import NORMAL, WARNING, SIREN
 from .job.update import UpdateJob
 from .color import Color
 from threading import Thread
@@ -73,7 +73,7 @@ class Kishinami(AwsIotContoller):
         self.blinks.shock(color)
 
     def cmd_state(self, payload):
-        if payload in [NORMAL, SILEN, WARNING]:
+        if payload in [NORMAL, SIREN, WARNING]:
             self._shadow_update(desired={'state': payload})
             return {'success': True}
         return {'success': False}
@@ -91,8 +91,8 @@ class Kishinami(AwsIotContoller):
             elif k == 'state':
                 if v == NORMAL:
                     v = NORMAL
-                elif v == SILEN:
-                    v = SILEN
+                elif v == SIREN:
+                    v = SIREN
                 else:
                     v = WARNING
 

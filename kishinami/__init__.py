@@ -8,5 +8,5 @@ WHITE = (0, 0, 0)
 ORANGE = (255, 40, 0)
 
 NORMAL = 'normal'
-SILEN = 'silen'
+SIREN = 'siren'
 WARNING = 'warning'

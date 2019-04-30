@@ -5,7 +5,7 @@ from threading import Thread
 import blinkt
 import time
 from kishinami import ORANGE, BLUE, YELLOW, RED, GREEN
-from kishinami import NORMAL, WARNING, SILEN
+from kishinami import NORMAL, WARNING, SIREN
 from .pattern import Null, Flear
 from . import action
 
@@ -29,7 +29,7 @@ class Base(Thread):
             for num in range(blinkt.NUM_PIXELS):
                 self.leds[num] = Flear(start=num / blinkt.NUM_PIXELS, speed=8, lowest=0.2)
                 self.color = [0, 0, 128]
-        elif state == SILEN:
+        elif state == SIREN:
             blinkt.set_brightness(0.3)
             for num in range(blinkt.NUM_PIXELS):
                 self.leds[num] = Flear(start=num / blinkt.NUM_PIXELS, speed=60, buf=5, sub=0)

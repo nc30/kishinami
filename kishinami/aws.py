@@ -5,12 +5,14 @@ logger.debug('hello!')
 
 from naganami_mqtt.awsiot import AwsIotContoller
 from kishinami import NORMAL, WARNING, SILEN
+from .job.update import UpdateJob
 from .color import Color
 from threading import Thread
 import json
 import time
 
 class Kishinami(AwsIotContoller):
+    jobScenarios = [UpdateJob]
     logger = logger
     status = {
         'color': Color([255, 40, 0]).list,
@@ -24,6 +26,7 @@ class Kishinami(AwsIotContoller):
 
     def on_connect(self, client, userdata, flags, respons_code):
         self._shadow_update(reported=self.status)
+        self.request_job()
         self.client.on_disconnect = self.on_disconnect
 
     def on_disconnect(client, userdata, rc):
@@ -39,6 +42,7 @@ class Kishinami(AwsIotContoller):
             i += 1
             if i > int(self.status['check_span']) * 10:
                 self._shadow_update(self.status)
+                self.request_job()
                 i = 0
             time.sleep(0.1)
 

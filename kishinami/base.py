@@ -15,7 +15,7 @@ class Base(Thread):
     def __init__(self, *args, **kwargs):
         super(Base, self).__init__(*args, **kwargs)
         blinkt.set_clear_on_exit()
-        blinkt.set_brightness(0.3)
+        blinkt.set_brightness(0.1)
 
         self.color = ORANGE
         self.loop = True

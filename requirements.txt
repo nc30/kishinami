@@ -1,2 +1,2 @@
-naganami-mqtt
+naganami-mqtt==0.0.4
 blinkt

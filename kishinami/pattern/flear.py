@@ -20,8 +20,7 @@ class Flear:
 
     def clock(self, clock):
         if self.blink and clock % (360 / self.blink) > 360 / (self.blink * 2):
-            v = 0
-            return [0, 0, 0]
+            return [int(c * 255) for c in colorsys.hsv_to_rgb(*self.color, 0.05)]
 
         clock = clock * self.speed + self.start
 

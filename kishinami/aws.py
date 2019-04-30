@@ -112,6 +112,6 @@ class Kishinami(AwsIotContoller):
                 if i >= len(self.status['noticeset']):
                     break
                 if type(self.status['noticeset'][i]) == list:
-                    self.blinks.setColor(self.status['noticeset'][i], 1 << i, 8)
+                    self.blinks.setColor(self.status['noticeset'][i], 1 << i, 12)
 
         self._shadow_update(reported=self.status, desired=r)

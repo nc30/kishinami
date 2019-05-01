@@ -1,15 +1,53 @@
-import logging
-from logging.handlers import TimedRotatingFileHandler
-import sys
+#!/usr/bin/env python3
 
-logger = logging.getLogger()
-logger.setLevel(logging.DEBUG)
-handler = TimedRotatingFileHandler('/var/log/kishinami/kishinami.log', when='d', encoding='utf-8', backupCount=3)
-handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
-logger.addHandler(handler)
-handler = logging.StreamHandler(stream=sys.stdout)
-handler.setFormatter(logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s'))
-logger.addHandler(handler)
+from logging import getLogger
+import logging.config
+import sys
+import os
+
+LOGLEVEL = 'DEBUG' if os.environ.get('DEBUG', False) else 'INFO'
+
+DEFAULT_LOGGING = {
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {
+        'console': {
+            'format': '%(filename)s:%(lineno)d %(name)s [%(levelname)s] %(message)s'
+        },
+        'file': {
+            'format': '[%(asctime)s] %(name)s [%(levelname)s] %(message)s'
+        }
+    },
+    'handlers': {
+        'console': {
+            'class': 'logging.StreamHandler',
+            'formatter': 'console',
+            'stream': sys.stdout
+        },
+        'file': {
+            'class': 'logging.handlers.TimedRotatingFileHandler',
+            'filename': '/var/log/kishinami/kishinami.log',
+            'when': 'd',
+            'encoding': 'utf-8',
+            'backupCount': 3,
+            'formatter': 'file'
+        }
+    },
+    'loggers': {
+        'kishinami': {
+            'handlers': ['console', 'file'],
+            'level': LOGLEVEL,
+        },
+        'naganami_mqtt': {
+            'handlers': ['console', 'file'],
+            'level': LOGLEVEL,
+        }
+    },
+}
+logging.config.dictConfig(DEFAULT_LOGGING)
+
+
+logger = getLogger('kishinami')
 
 from naganami_mqtt.awsiot import getAwsCredentialFromJson
 from kishinami.base import Base
@@ -35,11 +73,11 @@ if __name__ == '__main__':
         c.loop(block=True)
 
     except KeyboardInterrupt:
-        c.disconnect()
-        blinks.destroy()
-        logger.info('bye.')
+        sys.exit(0)
 
     finally:
         blinks.destroy()
         c.disconnect()
         logger.info('bye.')
+
+sys.exit(1)

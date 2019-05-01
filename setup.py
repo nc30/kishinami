@@ -2,7 +2,7 @@ from setuptools import setup
 from setuptools import find_packages
 import kishinami
 
-requires = ['naganami-mqtt==0.0.4', 'blinkt']
+requires = ['naganami-mqtt==0.0.6', 'blinkt']
 
 setup(
     name = "kishinami",

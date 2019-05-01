@@ -36,7 +36,7 @@ class Kishinami(AwsIotContoller):
         logger.info('Connection lost.')
 
     def loop(self, block=True):
-        logger.debug('loop start.')
+        logger.info('start main loop')
         self.looping = True
 
         self.client.loop_start()

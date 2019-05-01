@@ -19,6 +19,7 @@ class Base(Thread):
         blinkt.set_clear_on_exit()
         blinkt.set_brightness(0.1)
 
+        self.processing = False
         self.color = [0, 20, 128]
         self.loop = True
         self.normal = True
@@ -26,6 +27,9 @@ class Base(Thread):
         self.setState(PROGRESSING)
 
     def setState(self, state):
+        if self.processing:
+            state = PROGRESSING
+
         if state == NORMAL:
             blinkt.set_brightness(0.1)
             for num in range(blinkt.NUM_PIXELS):

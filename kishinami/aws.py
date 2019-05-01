@@ -91,6 +91,7 @@ class Kishinami(AwsIotContoller):
                 try:
                     self.status['color'] = Color(v).list
                     r['color'] = Color(v).list
+                    continue
                 except TypeError:
                     pass
 

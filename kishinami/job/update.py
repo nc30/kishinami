@@ -13,6 +13,8 @@ class UpdateJob(JobScenario):
 
     def sequence1_update_dist(self, jobDocument, statusDetail):
         logger.info('execute update secuence')
+        self.controller.blinks.processing = True
+        self.controller.blinks.setState(True)
 
         try:
             command = 'sudo /opt/kishinami/python/bin/pip3 install --upgrade --force "' + jobDocument['distFileUrl'] + '"'
@@ -34,6 +36,7 @@ class UpdateJob(JobScenario):
 
             logger.info('success.')
         except UpdateError as e:
+            self.controller.blinks.processing = False
             logger.exception(e)
             self.changeStatus('FAILED')
 
@@ -44,6 +47,7 @@ class UpdateJob(JobScenario):
 
         if statusDetails.get('is_restarted', False):
             logger.info('restarted success')
+            self.controller.blinks.processing = False
             return True
 
         self.statusDetails['is_restarted'] = True

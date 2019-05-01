@@ -1,6 +1,6 @@
 #!/bin/bash
 
-set -E
+set -e
 
 SCRIPT_DIR=$(cd $(dirname $0); pwd)
 APP=/opt/kishinami

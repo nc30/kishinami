@@ -39,7 +39,7 @@ class UpdateJob(JobScenario):
 
         return True
 
-    def sequence2_resutart(self, jobDocument, statusDetails):
+    def sequence2_restart(self, jobDocument, statusDetails):
         logger.info('do it restart job')
 
         if statusDetails.get('is_restarted', False):

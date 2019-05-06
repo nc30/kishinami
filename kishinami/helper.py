@@ -3,13 +3,15 @@ logger = getLogger(__name__)
 
 from uuid import getnode
 from kishinami import __version__
+import subprocess
 import socket
 
 def getClientInfo():
     return {
         "kishinamiVersion": __version__,
         "macAddress": getMyMac(),
-        "Host": getMyHost()
+        "Host": getMyHost(),
+        "Cpu": getCpuInfo()
     }
 
 def getMyMac():
@@ -25,3 +27,12 @@ def getMyHost():
     except OSError:
         host = 'unknown'
     return host
+
+def getCpuInfo():
+    return {
+        "tempture": subprocess.check_output(['vcgencmd','measure_temp']).decode().strip().split("=")[1],
+        "clock": subprocess.check_output(['vcgencmd','measure_clock arm']).decode().strip().split('=')[1],
+        "voltage": subprocess.check_output(['vcgencmd', 'measure_volts']).decode().strip().split('=')[1],
+        "arm_memoly_usage": subprocess.check_output(['vcgencmd', 'get_mem', 'arm']).decode().strip().split('=')[1],
+        "gpu_memory_usage": subprocess.check_output(['vcgencmd', 'get_mem', 'gpu']).decode().strip().split('=')[1]
+    }

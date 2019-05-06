@@ -17,6 +17,7 @@ class Kishinami(AwsIotContoller):
         'color': Color([0, 20, 128]).list,
         'state': NORMAL,
         'check_span': 180,
+        'low_light': False,
         'noticeset': []
     }
 
@@ -114,6 +115,7 @@ class Kishinami(AwsIotContoller):
 
 
         self.blinks.currentColor = self.status['color']
+        self.blinks.low_light = self.status['low_light']
         self.blinks.setState(self.status['state'])
 
         if self.status['state'] == NORMAL:

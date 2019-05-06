@@ -24,6 +24,7 @@ class Base(Thread):
         self.loop = True
         self.normal = True
         self.clock = 0
+        self.low_light = True
         self.setState(PROGRESSING)
 
     def setState(self, state):
@@ -33,17 +34,17 @@ class Base(Thread):
         if state == NORMAL:
             blinkt.set_brightness(0.1)
             for num in range(blinkt.NUM_PIXELS):
-                self.leds[num] = Flear(start=num / blinkt.NUM_PIXELS, speed=8, lowest=0.2)
+                self.leds[num] = Flear(start=num / blinkt.NUM_PIXELS, low_light=self.low_light, speed=8, lowest=0.2)
                 self.color = self.currentColor
         elif state == SIREN:
             blinkt.set_brightness(0.3)
             for num in range(blinkt.NUM_PIXELS):
-                self.leds[num] = Flear(start=num / blinkt.NUM_PIXELS, speed=60, buf=5, sub=0)
+                self.leds[num] = Flear(start=num / blinkt.NUM_PIXELS, low_light=self.low_light, speed=60, buf=5, sub=0)
                 self.color = RED
         elif state == PROGRESSING:
             blinkt.set_brightness(0.1)
             for num in range(blinkt.NUM_PIXELS):
-                self.leds[num] = Flear(start=num / blinkt.NUM_PIXELS, speed=30, sub=3, buf=2)
+                self.leds[num] = Flear(start=num / blinkt.NUM_PIXELS, low_light=self.low_light, speed=30, sub=3, buf=2)
                 self.color = [20, 0, 85]
         else:
             blinkt.set_brightness(0.1)

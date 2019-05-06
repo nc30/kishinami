@@ -22,8 +22,8 @@ if [ ! -d ${LOG} ]; then
 fi
 
 sudo cp ${SCRIPT_DIR}/run.py ${APP}/
-sudo ${APP}/python/bin/pip3 install ${SCRIPT_DIR}/
 sudo rm -rf ${SCRIPT_DIR}/kishinami.egg-info
+sudo ${APP}/python/bin/pip3 install ${SCRIPT_DIR}/
 
 [ ! -e /etc/systemd/system/kishinami.service ] && sudo cp ${SCRIPT_DIR}/kishinami.service /etc/systemd/system/
 
